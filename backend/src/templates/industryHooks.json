@@ -1,0 +1,92 @@
+{
+  "Dental": {
+    "intro": "I came across your dental practice website and was really impressed by your patient reviews.",
+    "value": "We specialize in helping dental clinics secure 15-20 new high-value implant and cosmetic dentistry patient bookings monthly.",
+    "cta": "Would you be open to a brief call next week to see how we do this on autopilot?"
+  },
+  "Gym": {
+    "intro": "I was checking out your fitness center online and loved your community vibe.",
+    "value": "We help gym owners boost their monthly membership signups by 25% using targeted local lead generation.",
+    "cta": "Can I send over a quick 2-minute breakdown of how we do this?"
+  },
+  "Restaurant": {
+    "intro": "I noticed your restaurant online and the food looks absolutely fantastic.",
+    "value": "We assist local eateries in filling up empty tables during slow weekdays by implementing automated reservation campaigns.",
+    "cta": "Would you be open to exploring this for your establishment?"
+  },
+  "Real Estate": {
+    "intro": "I saw your real estate listings and wanted to reach out regarding your digital marketing.",
+    "value": "We help agents and brokerages secure exclusive listings and pre-approved buyer inquiries daily.",
+    "cta": "Are you available for a quick 10-minute chat this Thursday?"
+  },
+  "Hotel": {
+    "intro": "I was researching hotels in your area and your property stood out immediately.",
+    "value": "We help boutique hotels increase their direct bookings by 30%, saving thousands in booking portal commissions.",
+    "cta": "Can I share a short case study showing how we did this for a similar hotel?"
+  },
+  "Construction": {
+    "intro": "I saw some of your recent construction and renovation projects online—excellent work.",
+    "value": "We help contractors and construction firms secure 3-5 high-ticket residential or commercial project leads every month.",
+    "cta": "Do you have 5 minutes to chat about scaling your pipeline?"
+  },
+  "Ecommerce": {
+    "intro": "I was browsing your online store and really liked your product range.",
+    "value": "We specialize in helping ecommerce brands recover 15%+ of abandoned carts and increase customer lifetime value using email flows.",
+    "cta": "Would you be interested in a free audit of your current email setup?"
+  },
+  "Retail": {
+    "intro": "I came across your retail shop online and noticed your excellent store front.",
+    "value": "We help local retail businesses drive online foot traffic and boost instore visits through localized VIP promotions.",
+    "cta": "Could we connect for a quick 5-minute call next week?"
+  },
+  "Salon": {
+    "intro": "I noticed your salon page and the styling work you do looks top-notch.",
+    "value": "We help salon owners book out their calendars during slow hours using automated SMS and email reminders.",
+    "cta": "Would you like to see how we fill up those empty slots?"
+  },
+  "Clinic": {
+    "intro": "I was looking at your clinic's patient outreach and wanted to share something interesting.",
+    "value": "We help private medical practices reduce appointment no-shows by 40% using automated intake and confirmation systems.",
+    "cta": "Would you be open to a quick intro call on Tuesday?"
+  },
+  "Education": {
+    "intro": "I was reviewing your educational programs and loved your approach to student development.",
+    "value": "We help private schools and training centers increase their enrollment numbers by 20% through targeted student outreach.",
+    "cta": "Let's connect for a brief 10-minute call to discuss."
+  },
+  "Finance": {
+    "intro": "I was reading about your financial advisory firm and really value your wealth management approach.",
+    "value": "We help financial advisors book high-net-worth client consultations using compliant outreach systems.",
+    "cta": "Can I send you a PDF outlining our specific outreach process?"
+  },
+  "Manufacturing": {
+    "intro": "I was researching manufacturing firms and was impressed by your facility's capabilities.",
+    "value": "We help manufacturers secure contract manufacturing inquiries and large wholesale accounts.",
+    "cta": "Would you have time for a brief introductory call this week?"
+  },
+  "Logistics": {
+    "intro": "I saw your transport and logistics operations and wanted to touch base.",
+    "value": "We help logistics and supply chain providers acquire new shipping accounts and freight dispatch contracts.",
+    "cta": "Are you open to a quick chat about scaling your sales pipeline?"
+  },
+  "SaaS": {
+    "intro": "I saw your SaaS product online and it looks like a game-changer for your users.",
+    "value": "We help software companies book 20+ qualified demo calls per month with enterprise decision-makers.",
+    "cta": "Would you like to check out our demo booking case study?"
+  },
+  "Startup": {
+    "intro": "I've been following your startup's journey and wanted to reach out to the team.",
+    "value": "We help early-stage startups establish predictable outbound sales pipelines to validate product-market fit fast.",
+    "cta": "Can I share a quick outline of our startup growth framework?"
+  },
+  "IT Agency": {
+    "intro": "I came across your agency's portfolio and saw some really impressive development work.",
+    "value": "We help software development and IT consultation agencies sign high-ticket retainer contracts using cold outreach.",
+    "cta": "Would you be open to looking at the templates we use to book IT projects?"
+  },
+  "Other": {
+    "intro": "I was looking at your company online and wanted to get in touch.",
+    "value": "We help businesses stand out, optimize operations, and generate high-quality B2B leads.",
+    "cta": "Would you be open to a brief call to see if there is a mutual fit?"
+  }
+}
