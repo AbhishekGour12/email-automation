@@ -15,7 +15,23 @@ try {
 
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     try {
-      serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+      let rawCreds = process.env.FIREBASE_SERVICE_ACCOUNT.trim();
+      
+      // Strip surrounding quotes if Render wrapped it in them
+      if ((rawCreds.startsWith("'") && rawCreds.endsWith("'")) || (rawCreds.startsWith('"') && rawCreds.endsWith('"'))) {
+        rawCreds = rawCreds.slice(1, -1).trim();
+      }
+      
+      // If it looks like base64 (not starting with '{'), try decoding it
+      if (!rawCreds.startsWith('{')) {
+        logger.info('FIREBASE_SERVICE_ACCOUNT does not start with JSON brace. Attempting Base64 decode...');
+        const decoded = Buffer.from(rawCreds, 'base64').toString('utf8').trim();
+        if (decoded.startsWith('{')) {
+          rawCreds = decoded;
+        }
+      }
+      
+      serviceAccount = JSON.parse(rawCreds);
     } catch (err) {
       logger.error('Failed to parse FIREBASE_SERVICE_ACCOUNT env variable as JSON.', err);
     }

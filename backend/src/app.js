@@ -22,6 +22,9 @@ const webhookRoutes = require('./routes/webhook.routes');
 
 const app = express();
 
+// Trust proxy for rate limiting (essential behind Render/reverse proxy)
+app.set('trust proxy', 1);
+
 // Ensure uploads and logs folders exist
 const uploadsDir = path.join(__dirname, '../uploads');
 const logsDir = path.join(__dirname, '../logs');
