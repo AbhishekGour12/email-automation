@@ -11,15 +11,24 @@ let redisConnection;
 try {
   if (process.env.REDIS_URL) {
     logger.info('Initializing Redis connection via REDIS_URL...');
-    redisConnection = new Redis(process.env.REDIS_URL, redisConfig);
+    const options = { ...redisConfig };
+    if (process.env.REDIS_URL.startsWith('rediss://') || process.env.REDIS_URL.includes('upstash.io')) {
+      options.tls = { rejectUnauthorized: false };
+    }
+    redisConnection = new Redis(process.env.REDIS_URL, options);
   } else {
     logger.info('Initializing Redis connection via host/port config...');
-    redisConnection = new Redis({
-      host: process.env.REDIS_HOST || '127.0.0.1',
+    const host = process.env.REDIS_HOST || '127.0.0.1';
+    const options = {
+      host,
       port: parseInt(process.env.REDIS_PORT || '6379', 10),
       password: process.env.REDIS_PASSWORD || undefined,
       ...redisConfig
-    });
+    };
+    if (host.includes('upstash.io') || process.env.REDIS_PASSWORD) {
+      options.tls = { rejectUnauthorized: false };
+    }
+    redisConnection = new Redis(options);
   }
 
   redisConnection.on('connect', () => {
