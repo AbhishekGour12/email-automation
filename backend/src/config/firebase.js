@@ -11,20 +11,47 @@ if (!databaseURL) {
   process.exit(1);
 }
 
+// Helper to sanitize quotes and whitespace from environment variables
+const sanitizeEnvVar = (val) => {
+  if (!val) return val;
+  let cleaned = val.trim();
+  if ((cleaned.startsWith("'") && cleaned.endsWith("'")) || (cleaned.startsWith('"') && cleaned.endsWith('"'))) {
+    cleaned = cleaned.slice(1, -1).trim();
+  }
+  return cleaned;
+};
+
 try {
   let serviceAccount = null;
 
+  const rawProjectId = process.env.FIREBASE_PROJECT_ID;
+  const rawClientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const rawPrivateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+  const projectId = sanitizeEnvVar(rawProjectId);
+  const clientEmail = sanitizeEnvVar(rawClientEmail);
+  const privateKey = sanitizeEnvVar(rawPrivateKey);
+
   // 1. Check for individual environment variables first
-  if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
+  if (projectId && clientEmail && privateKey) {
     logger.info('Initializing Firebase using individual environment variables.');
     serviceAccount = {
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+      projectId,
+      clientEmail,
+      privateKey: privateKey.replace(/\\n/g, '\n')
     };
   } 
-  // 2. Fallback to stringified/base64 JSON environment variable
-  else if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  // If some but not all individual env vars are provided, log a detailed error
+  else if (rawProjectId || rawClientEmail || rawPrivateKey) {
+    logger.error('Incomplete Firebase credentials provided in individual environment variables: ' +
+      `FIREBASE_PROJECT_ID: ${projectId ? 'PRESENT' : 'MISSING'}, ` +
+      `FIREBASE_CLIENT_EMAIL: ${clientEmail ? 'PRESENT' : 'MISSING'}, ` +
+      `FIREBASE_PRIVATE_KEY: ${privateKey ? 'PRESENT' : 'MISSING'}.`
+    );
+  }
+
+  // 2. Fallback to stringified/base64 JSON environment variable (only if individual variables were not used)
+  if (!serviceAccount && process.env.FIREBASE_SERVICE_ACCOUNT) {
     try {
       let rawCreds = process.env.FIREBASE_SERVICE_ACCOUNT.trim();
       
@@ -47,8 +74,9 @@ try {
       logger.error('Failed to parse FIREBASE_SERVICE_ACCOUNT env variable as JSON.', err);
     }
   } 
-  // 3. Fallback to path-based configuration (only if file exists)
-  else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
+
+  // 3. Fallback to path-based configuration (only if file exists and credentials not loaded yet)
+  if (!serviceAccount && process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
     const resolvedPath = path.resolve(process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
     if (fs.existsSync(resolvedPath)) {
       try {
@@ -68,12 +96,19 @@ try {
     });
     logger.info('Firebase Admin initialized successfully using service account.');
   } else {
-    // If no credentials provided, initialize with application default credentials or try local emulator
-    // In production this will throw if no environment default credentials exist, which is correct
-    admin.initializeApp({
-      databaseURL: databaseURL
-    });
-    logger.warn('Firebase Admin initialized without explicit service account (using default credentials/emulator).');
+    // In production, we MUST have a service account credential to connect to Realtime Database. Fail fast.
+    if (process.env.NODE_ENV === 'production') {
+      logger.error('CRITICAL: Firebase service account credentials are missing or invalid in production environment. ' +
+        'Realtime Database connections cannot be authorized. Please configure either individual environment variables ' +
+        '(FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY) or stringified JSON (FIREBASE_SERVICE_ACCOUNT).');
+      process.exit(1);
+    } else {
+      // If no credentials provided in development, initialize with default configuration (e.g. for emulator)
+      admin.initializeApp({
+        databaseURL: databaseURL
+      });
+      logger.warn('Firebase Admin initialized without explicit service account (using default credentials/emulator).');
+    }
   }
 } catch (error) {
   logger.error('Firebase Admin initialization failed:', error);
