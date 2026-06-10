@@ -1,5 +1,6 @@
 const admin = require('firebase-admin');
 const path = require('path');
+const fs = require('fs');
 const { logger } = require('../utils/logger');
 require('dotenv').config();
 
@@ -13,7 +14,17 @@ if (!databaseURL) {
 try {
   let serviceAccount = null;
 
-  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  // 1. Check for individual environment variables first
+  if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
+    logger.info('Initializing Firebase using individual environment variables.');
+    serviceAccount = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+    };
+  } 
+  // 2. Fallback to stringified/base64 JSON environment variable
+  else if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     try {
       let rawCreds = process.env.FIREBASE_SERVICE_ACCOUNT.trim();
       
@@ -35,11 +46,18 @@ try {
     } catch (err) {
       logger.error('Failed to parse FIREBASE_SERVICE_ACCOUNT env variable as JSON.', err);
     }
-  } else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
-    try {
-      serviceAccount = require(path.resolve(process.env.FIREBASE_SERVICE_ACCOUNT_PATH));
-    } catch (err) {
-      logger.error(`Failed to load Firebase service account from path: ${process.env.FIREBASE_SERVICE_ACCOUNT_PATH}`, err);
+  } 
+  // 3. Fallback to path-based configuration (only if file exists)
+  else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
+    const resolvedPath = path.resolve(process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
+    if (fs.existsSync(resolvedPath)) {
+      try {
+        serviceAccount = require(resolvedPath);
+      } catch (err) {
+        logger.error(`Failed to load Firebase service account from path: ${process.env.FIREBASE_SERVICE_ACCOUNT_PATH}`, err);
+      }
+    } else {
+      logger.warn(`Firebase service account file not found at path: ${process.env.FIREBASE_SERVICE_ACCOUNT_PATH}. Skipping path-based load.`);
     }
   }
 

@@ -27,7 +27,10 @@ In your Render Service Dashboard, navigate to the **Environment** tab and add th
 | `NODE_ENV` | `production` | Set to production environment |
 | `API_BASE_URL` | `https://your-backend-url.onrender.com` | Your generated Render Web Service URL |
 | `FIREBASE_DATABASE_URL` | `https://your-project.firebaseio.com` | Firebase Realtime Database URL |
-| `FIREBASE_SERVICE_ACCOUNT` | `{"type": "service_account", ...}` | Paste the entire content of your `firebase-service-account.json` file as a one-line JSON string |
+| `FIREBASE_PROJECT_ID` | `your-firebase-project-id` | (Recommended) The `project_id` field from your `firebase-service-account.json` |
+| `FIREBASE_CLIENT_EMAIL` | `firebase-adminsdk-fbsvc@your-project.iam.gserviceaccount.com` | (Recommended) The `client_email` field from your `firebase-service-account.json` |
+| `FIREBASE_PRIVATE_KEY` | `-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n` | (Recommended) The `private_key` field from your `firebase-service-account.json` (include the whole block, escaped `\n` handles line breaks) |
+| `FIREBASE_SERVICE_ACCOUNT` | `{"type": "service_account", ...}` | (Alternative) Paste the entire content of your `firebase-service-account.json` file as a one-line JSON string |
 | `REDIS_URL` | `redis://...` or `rediss://...` | Connection URL for your Redis instance (see Section 2) |
 | `SMTP_HOST` | `smtp.gmail.com` | Google/Gmail SMTP Host |
 | `SMTP_PORT` | `465` | SMTP Port |
