@@ -2,6 +2,7 @@ const { db } = require('../config/firebase');
 const { logger } = require('./logger');
 
 const firebaseHelper = {
+  db,
   /**
    * Get data from a reference path
    * @param {string} path 

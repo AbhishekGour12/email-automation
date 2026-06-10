@@ -13,9 +13,16 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
+    console.log(`[Axios Request] URL: ${config.url}, Token exists: ${!!token}`);
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      if (config.headers && typeof config.headers.set === 'function') {
+        config.headers.set('Authorization', `Bearer ${token}`);
+      } else {
+        if (!config.headers) config.headers = {};
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
+    console.log(`[Axios Request Headers for ${config.url}]`, config.headers);
     return config;
   },
   (error) => Promise.reject(error)
@@ -76,7 +83,12 @@ apiClient.interceptors.response.use(
         localStorage.setItem('refreshToken', newRefreshToken);
 
         apiClient.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        if (originalRequest.headers && typeof originalRequest.headers.set === 'function') {
+          originalRequest.headers.set('Authorization', `Bearer ${newAccessToken}`);
+        } else {
+          if (!originalRequest.headers) originalRequest.headers = {};
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        }
 
         processQueue(null, newAccessToken);
         isRefreshing = false;
