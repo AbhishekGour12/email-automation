@@ -5,13 +5,20 @@ require('dotenv').config();
 // Helper to create transport config from dynamic inputs or env variables
 const getSmtpConfig = (customSettings = null) => {
   if (customSettings && customSettings.host) {
+    // Use service shortcut for Gmail to optimize, otherwise use custom host config
+    if (customSettings.host.includes('gmail.com')) {
+      return {
+        service: 'gmail',
+        auth: {
+          user: customSettings.auth?.user || customSettings.user,
+          pass: customSettings.auth?.pass || customSettings.pass
+        }
+      };
+    }
     return {
-      /** 
       host: customSettings.host,
       port: parseInt(customSettings.port, 10),
       secure: customSettings.secure === true || customSettings.secure === 'true',
-      */
-      service: "gmail",
       auth: {
         user: customSettings.auth?.user || customSettings.user,
         pass: customSettings.auth?.pass || customSettings.pass
@@ -19,16 +26,31 @@ const getSmtpConfig = (customSettings = null) => {
     };
   }
 
+  if (process.env.SMTP_HOST) {
+    if (process.env.SMTP_HOST.includes('gmail.com')) {
+      return {
+        service: 'gmail',
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS
+        }
+      };
+    }
+    return {
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '465', 10),
+      secure: process.env.SMTP_SECURE !== 'false',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    };
+  }
+
   return {
-    /** 
-    host: process.env.SMTP_HOST || 'smtp.hostinger.com',
-    port: parseInt(process.env.SMTP_PORT || '465', 10),
-    
-    secure: process.env.SMTP_SECURE !== 'false', // default to true (SSL)
-    */
-    service: "gmail",
+    service: 'gmail',
     auth: {
-      user: process.env.SMTP_USER || 'a',
+      user: process.env.SMTP_USER || '',
       pass: process.env.SMTP_PASS || ''
     }
   };

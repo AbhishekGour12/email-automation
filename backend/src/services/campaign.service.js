@@ -90,7 +90,7 @@ const campaignService = {
     const smtpConfig = campaign.customSmtp || savedSmtp;
     const isSmtpValid = await emailService.testSmtpConnection(smtpConfig);
     if (!isSmtpValid) {
-      throw new ApiError(400, 'Cannot start campaign: SMTP credentials verification failed. Please check your Hostinger SMTP credentials in Settings.');
+      throw new ApiError(400, 'Cannot start campaign: SMTP credentials verification failed. Please check your SMTP settings.');
     }
 
     // 1. Update status to Running
